@@ -7,7 +7,7 @@ const app = express();
 //define routes and route handlers //
 
 /** @route GET / */
-app.get("/", ExchangeController.getAllData);
+app.get("/", ExchangeController.getRateAllData);
 
 /** @route  GET /banks */
 app.get("/banks", ExchangeController.banks);

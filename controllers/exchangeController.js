@@ -37,7 +37,7 @@ async function getData() {
  * @route GET /
  * @access Public
  */
-const getAllData = asyncHanlder(async (req, res) => {
+const getRateAllData = asyncHanlder(async (req, res) => {
   const data = await getData();
   return res.json(data);
 });
@@ -144,7 +144,7 @@ const currencyAtBank = asyncHanlder(async (req, res) => {
 });
 
 module.exports = {
-  getAllData,
+  getRateAllData,
   banks,
   bankRates,
   currencyAtBank,
