@@ -5,7 +5,6 @@ const getAllExchangeRates = require("./getAllExchangeRates");
 
 async function getEthiopianExchangeRate() {
   const html = await getHTML();
-  console.log("got html . . .");
 
   //load html to cheerio
   const $ = cheerio.load(html);
