@@ -50,7 +50,7 @@ const getRateAllData = asyncHanlder(async (req, res) => {
  */
 const bestRates = asyncHanlder(async (req, res) => {
   const data = await getData();
-  return res.json(data?.bestRate);
+  return res.json({ code: 200, bestRates: data?.bestRate });
 });
 
 /**

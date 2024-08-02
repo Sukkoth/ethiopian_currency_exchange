@@ -23,7 +23,7 @@ async function getEthiopianExchangeRate() {
   }
   return {
     lastUpdated: Date(lastUpdatedText.split(" ").slice(2).join(" ").toString()),
-    bestRate: bestRateData,
+    bestRates: bestRateData,
     exchange_rates: allExchangeRates,
     source: "https://banksethiopia.com/ethiopian-birr-exchange-rate",
   };
