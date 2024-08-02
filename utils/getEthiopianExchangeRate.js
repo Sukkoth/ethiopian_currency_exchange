@@ -1,11 +1,11 @@
 const cheerio = require("cheerio");
-const writeData = require("./writeData");
 const getHTML = require("./getHTML");
 const getBestRates = require("./getBestRates");
 const getAllExchangeRates = require("./getAllExchangeRates");
 
 async function getEthiopianExchangeRate() {
   const html = await getHTML();
+  console.log("got html . . .");
 
   //load html to cheerio
   const $ = cheerio.load(html);
@@ -18,13 +18,15 @@ async function getEthiopianExchangeRate() {
 
   // Extract the last updated text
   const lastUpdatedText = $(".table-responsive.rounded > p").text().trim();
-  console.log(lastUpdatedText);
+
+  if (!allExchangeRates) {
+    throw "Server down, try again later";
+  }
   return {
-    lastUpdatedText: Date(
-      lastUpdatedText.split(" ").slice(2).join(" ").toString()
-    ),
+    lastUpdated: Date(lastUpdatedText.split(" ").slice(2).join(" ").toString()),
     bestRate: bestRateData,
     exchange_rates: allExchangeRates,
+    source: "https://banksethiopia.com/ethiopian-birr-exchange-rate",
   };
 }
 
