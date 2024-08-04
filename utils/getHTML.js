@@ -7,6 +7,7 @@ async function getHTML() {
     const { data: html } = await axios.get(url);
     return html;
   } catch (error) {
+    console.error(error);
     throw new Error("Could not fetch HTML");
   }
 }
