@@ -5,12 +5,28 @@ function getExchangeRateForBank($, table) {
   };
 
   bankData["name"] = getBank($, table);
+  bankData["lastUpdated"] = getLastUpdated($, table);
   bankData["rates"] = getRates($, table);
   return bankData;
 }
 
 function getBank($, table) {
   return $(table).find("th.text-capitalize.text-left > h3").text().trim();
+}
+
+function getLastUpdated($, table) {
+  const dateString = $(table)
+    .find("th.text-capitalize.text-left > p")
+    .find("time")
+    .attr("datetime");
+
+  try {
+    console.log("send parsed");
+    return new Date(dateString).toDateString();
+  } catch (error) {
+    console.log("send raw");
+    return dateString;
+  }
 }
 
 //get each exchange rate for a bank
@@ -26,7 +42,7 @@ function getRates($, table) {
         rates.push({
           baseCurrency: "ETB",
           currencyCode: $(tds[0]).text().trim(),
-          currencyName: $(tds[1]).text().trim(),
+          // currencyName: $(tds[1]).text().trim(),
           buyRate: $(tds[2]).text().trim() || null,
           sellRate: $(tds[4]).text().trim() || null,
           transactionBuyingRate: $(tds[6]).text().trim() || null,
@@ -43,7 +59,7 @@ function getRates($, table) {
         rates.push({
           baseCurrency: "ETB",
           currencyCode: $(tds[0]).text().trim(),
-          currencyName: $(tds[1]).text().trim(),
+          // currencyName: $(tds[1]).text().trim(),
           buyRate: $(tds[2]).text().trim() || null,
           sellRate: $(tds[4]).text().trim() || null,
           transactionBuyingRate: null,
@@ -60,7 +76,7 @@ function getRates($, table) {
         rates.push({
           baseCurrency: "ETB",
           currencyCode: $(tds[0]).text().trim(),
-          currencyName: $(tds[1]).text().trim(),
+          // currencyName: $(tds[1]).text().trim(),
           buyRate: $(tds[2]).text().trim() || null,
           sellRate: $(tds[3]).text().trim() || null,
           transactionBuyingRate: null,

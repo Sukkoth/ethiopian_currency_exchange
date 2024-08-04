@@ -18,11 +18,11 @@ async function getEthiopianExchangeRate() {
   // Extract the last updated text
   const lastUpdatedText = $(".table-responsive.rounded > p").text().trim();
 
-  if (!allExchangeRates) {
+  if (!allExchangeRates || allExchangeRates?.length === 0) {
     throw "Server down, try again later";
   }
   return {
-    lastUpdated: Date(lastUpdatedText.split(" ").slice(2).join(" ").toString()),
+    lastUpdated: lastUpdatedText.split(" ").slice(2).join(" ").toString(),
     bestRates: bestRateData,
     exchange_rates: allExchangeRates,
     source: "https://banksethiopia.com/ethiopian-birr-exchange-rate",
