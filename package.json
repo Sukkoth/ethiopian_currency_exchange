@@ -22,6 +22,9 @@
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
-    "node-cache": "^5.1.2"
+    "node-cache": "^5.1.2",
+    "puppeteer": "^22.15.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }

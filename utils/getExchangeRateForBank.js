@@ -21,10 +21,8 @@ function getLastUpdated($, table) {
     .attr("datetime");
 
   try {
-    console.log("send parsed");
     return new Date(dateString).toDateString();
   } catch (error) {
-    console.log("send raw");
     return dateString;
   }
 }

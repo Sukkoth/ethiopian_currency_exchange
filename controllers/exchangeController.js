@@ -3,7 +3,7 @@ const asyncHanlder = require("express-async-handler");
 const getEthiopianExchangeRate = require("../utils/getEthiopianExchangeRate");
 
 //initialize cache for node-cache
-const cache = new NodeCache({ stdTTL: 3600, checkperiod: 1800 }); // TTL of 1 hour, check cache every 10 minutes
+const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 }); // TTL of 1 hour, check cache every 10 minutes
 
 /**
  * @async
