@@ -21,10 +21,13 @@ app.get("/banks/:bank/rates", ExchangeController.bankRates);
 /** @route GET /banks/:bankName/rates/:currencyCode */
 app.get("/banks/:bank/rates/:currencyCode", ExchangeController.currencyAtBank);
 
+/** @route GET /banks/:bankName/rates/:currencyCode */
+app.get("/errorLogs", ExchangeController.getErrors);
+
 //set up middleware
 
 app.use(errorHandler);
-app.use((req, res) => {
+app.use((_, res) => {
   res.status(404).json({
     message: "Not Found",
     status: 404,

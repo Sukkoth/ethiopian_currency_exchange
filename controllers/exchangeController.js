@@ -1,6 +1,8 @@
 const NodeCache = require("node-cache");
 const asyncHanlder = require("express-async-handler");
 const getEthiopianExchangeRate = require("../utils/getEthiopianExchangeRate");
+const fs = require("fs");
+const path = require("path");
 
 //initialize cache for node-cache
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 }); // TTL of 1 hour, check cache every 10 minutes
@@ -143,10 +145,33 @@ const currencyAtBank = asyncHanlder(async (req, res) => {
   throw new Error("Could not get requested data");
 });
 
+/**
+ * @async
+ * @description returns exchange rate of banks either from cache or by scraping web page
+ * @returns {array}
+ * @param {array} exchangeRateData - Exchange rates for banks.
+ */
+const getErrors = asyncHanlder(async (req, res) => {
+  const filePath = path.join("./", "errors.txt"); // Make sure the path is correct
+
+  fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("An error occurred while reading the file:", err);
+      res.status(500).json({
+        message: "An error occurred while reading the file",
+        code: 500,
+      });
+    } else {
+      res.send(data);
+    }
+  });
+});
+
 module.exports = {
   getRateAllData,
   banks,
   bankRates,
   currencyAtBank,
   bestRates,
+  getErrors,
 };
