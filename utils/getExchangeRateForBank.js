@@ -11,7 +11,11 @@ function getExchangeRateForBank($, table) {
 }
 
 function getBank($, table) {
-  return $(table).find("th.text-capitalize.text-left > h3").text().trim();
+  return $(table)
+    .find("th.text-capitalize.text-left > h3")
+    .text()
+    .trim()
+    .replace(" Exchange Rate", "");
 }
 
 function getLastUpdated($, table) {

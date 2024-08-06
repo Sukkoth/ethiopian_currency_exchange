@@ -1,42 +1,24 @@
-const puppeteer = require("puppeteer-extra");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+const { default: axios } = require("axios");
 const fs = require("fs");
 
 const url = "https://banksethiopia.com/ethiopian-birr-exchange-rate";
 
 async function getHTML() {
   try {
-    puppeteer.use(StealthPlugin());
-    // Launch Puppeteer with Stealth Plugin
-    console.log("Init browser");
+    // Set up headers and cookies if necessary
+    const headers = {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      // Add more headers if needed
+    };
 
-    const browser = await puppeteer.launch({ headless: true });
-    console.log("Init page");
-    const page = await browser.newPage();
-
-    // Go to the URL and wait until network is idle
-
-    console.log("waiting for page");
-    await page.goto(url, { waitUntil: "networkidle2" });
-
-    console.log("waiting for body");
-    // Wait for the main content to load
-    await page.waitForSelector("body");
-
-    console.log("getting html");
-    // Get the HTML content of the page
-    const html = await page.content();
-
-    console.log("closing browser");
-    // Close the browser
-    await browser.close();
-
-    console.log("Got HTML");
+    // Send the GET request to the URL
+    const { data: html } = await axios.get(url, { headers });
     return html;
   } catch (error) {
     console.error("PRINT ERROR: ", error);
     writeErrorToFile(error);
-    throw new Error("Could not fetch HTML");
+    throw new Error(JSON.stringify(serializeError(error)));
   }
 }
 
