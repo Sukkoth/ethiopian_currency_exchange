@@ -1,8 +1,6 @@
 const NodeCache = require("node-cache");
 const asyncHanlder = require("express-async-handler");
 const getEthiopianExchangeRate = require("../utils/getEthiopianExchangeRate");
-const fs = require("fs");
-const path = require("path");
 
 //initialize cache for node-cache
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 }); // TTL of 1 hour, check cache every 10 minutes
@@ -41,7 +39,7 @@ async function getData() {
  */
 const getRateAllData = asyncHanlder(async (req, res) => {
   const data = await getData();
-  return res.json(data);
+  return res.json({ code: 200, ...data });
 });
 
 /**
@@ -53,6 +51,36 @@ const getRateAllData = asyncHanlder(async (req, res) => {
 const bestRates = asyncHanlder(async (req, res) => {
   const data = await getData();
   return res.json({ code: 200, bestRates: data?.bestRates });
+});
+
+/**
+ * @async
+ * @description get rates at all banks for a currency
+ * @route GET /rates/:currencyCode
+ * @access Public
+ */
+const ratesForCurrency = asyncHanlder(async (req, res) => {
+  const data = await getData();
+  const { currencyCode } = req.params;
+  let allRatesForCurrency = [];
+  data.exchange_rates.forEach((bank) => {
+    const bankName = bank?.name;
+    const currency = bank?.rates?.find(
+      (rate) => rate.currencyCode.toLowerCase() === currencyCode.toLowerCase()
+    );
+    if (!currency || currency?.length === 0) {
+      throw new Error("Currency not found");
+    }
+    allRatesForCurrency.push({
+      bankName,
+      rate: currency,
+    });
+  });
+  return res.json({
+    code: 200,
+    currency: currencyCode.toUpperCase(),
+    rates: allRatesForCurrency,
+  });
 });
 
 /**
@@ -107,7 +135,6 @@ const bankRates = asyncHanlder(async (req, res) => {
  * @access Public
  * @param {string} bankName - Name of bank
  * @param {string} currencyCode - Currency code for which the enquiry is done
-
  */
 
 const currencyAtBank = asyncHanlder(async (req, res) => {
@@ -151,21 +178,6 @@ const currencyAtBank = asyncHanlder(async (req, res) => {
  * @returns {array}
  * @param {array} exchangeRateData - Exchange rates for banks.
  */
-const getErrors = asyncHanlder(async (req, res) => {
-  const filePath = path.join("./", "errors.txt"); // Make sure the path is correct
-
-  fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) {
-      console.error("An error occurred while reading the file:", err);
-      res.status(500).json({
-        message: "An error occurred while reading the file",
-        code: 500,
-      });
-    } else {
-      res.send(data);
-    }
-  });
-});
 
 module.exports = {
   getRateAllData,
@@ -173,5 +185,5 @@ module.exports = {
   bankRates,
   currencyAtBank,
   bestRates,
-  getErrors,
+  ratesForCurrency,
 };
