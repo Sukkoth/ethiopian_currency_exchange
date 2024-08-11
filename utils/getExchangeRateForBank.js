@@ -9,7 +9,6 @@ function getExchangeRateForBank($, table) {
   bankData["icon"] = getBankIcon($, table);
   bankData["lastUpdated"] = getLastUpdated($, table);
   bankData["rates"] = getRates($, table);
-  console.log(bankData["icon"]);
   return bankData;
 }
 
