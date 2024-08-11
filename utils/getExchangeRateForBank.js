@@ -1,31 +1,31 @@
 function getExchangeRateForBank($, table) {
   const bankData = {
     name: "",
+    icon: "",
     rates: [],
   };
 
   bankData["name"] = getBank($, table);
+  bankData["icon"] = getBankIcon($, table);
   bankData["lastUpdated"] = getLastUpdated($, table);
   bankData["rates"] = getRates($, table);
+  console.log(bankData["icon"]);
   return bankData;
 }
 
 function getBank($, table) {
-  return $(table)
-    .find("th.text-capitalize.text-left > h3")
-    .text()
-    .trim()
-    .replace(" Exchange Rate", "");
+  return $(table).find("a").text().trim().replace(" Exchange Rate", "");
+}
+
+function getBankIcon($, table) {
+  return $(table).find("img").attr("data-src");
 }
 
 function getLastUpdated($, table) {
-  const dateString = $(table)
-    .find("th.text-capitalize.text-left > p")
-    .find("time")
-    .attr("datetime");
+  const dateString = $(table).find("time").attr("datetime");
 
   try {
-    return new Date(dateString).toDateString();
+    return new Date(dateString).toISOString();
   } catch (error) {
     return dateString;
   }
