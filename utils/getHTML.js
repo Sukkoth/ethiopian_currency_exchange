@@ -30,7 +30,7 @@ async function getHTML() {
     const { data: html } = await axios.get(url, { headers });
     return html;
   } catch (error) {
-    throw new Error(error?.message || "Could not get HTML");
+    throw new Error("Could not get HTML");
   }
 }
 
