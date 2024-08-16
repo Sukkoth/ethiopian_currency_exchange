@@ -35,6 +35,9 @@ app.use((_, res) => {
 });
 
 //start the server
-app.listen(8000, () => {
-  console.log("Server started on port 8000");
+app.listen(7000, () => {
+  console.log("Server started on port 7000");
 });
+
+// export default app;
+module.exports = app;
