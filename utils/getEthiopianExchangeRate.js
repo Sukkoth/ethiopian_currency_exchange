@@ -26,6 +26,7 @@ async function getEthiopianExchangeRate() {
     bestRates: bestRateData,
     exchange_rates: allExchangeRates,
     source: "https://banksethiopia.com/ethiopian-birr-exchange-rate",
+    documentation: "https://documenter.getpostman.com/view/19117078/2sA3rxrZE7",
   };
 }
 
