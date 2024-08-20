@@ -1,12 +1,11 @@
 function getExchangeRateForBank($, table) {
   const bankData = {
     name: "",
-    icon: "",
     rates: [],
+    lastUpdated: "",
   };
 
   bankData["name"] = getBank($, table);
-  bankData["icon"] = getBankIcon($, table);
   bankData["lastUpdated"] = getLastUpdated($, table);
   bankData["rates"] = getRates($, table);
   return bankData;
@@ -14,10 +13,6 @@ function getExchangeRateForBank($, table) {
 
 function getBank($, table) {
   return $(table).find("a").text().trim().replace(" Exchange Rate", "");
-}
-
-function getBankIcon($, table) {
-  return $(table).find("img").attr("data-src");
 }
 
 function getLastUpdated($, table) {
@@ -38,58 +33,30 @@ function getRates($, table) {
     .each((_, row) => {
       const tds = $(row).find("td");
 
-      //each tables row length varies but there are 8, 6, 4, mostly
-      if (tds.length === 8) {
-        rates.push({
-          baseCurrency: "ETB",
-          currencyCode: $(tds[0]).text().trim(),
-          // currencyName: $(tds[1]).text().trim(),
-          buyRate: $(tds[2]).text().trim() || null,
-          sellRate: $(tds[4]).text().trim() || null,
-          transactionBuyingRate: $(tds[6]).text().trim() || null,
-          transactionSellingRate: $(tds[7]).text().trim() || null,
-          buySellDifference: (
-            ($(tds[4]).text().trim() || 0) - ($(tds[2]).text().trim() || 0)
-          ).toFixed(2),
-          transactionBuySellDifference: (
-            ($(tds[7]).text().trim() || 0) - ($(tds[6]).text().trim() || 0)
-          ).toFixed(2),
-        });
+      const buyRate = parseFloat($(tds[1]).text().trim()) || null;
+      const sellRate = parseFloat($(tds[2]).text().trim()) || null;
+      let buySellDifference = null;
+      if (buyRate !== null && sellRate !== null) {
+        buySellDifference = sellRate - buyRate;
       }
-      if (tds.length === 6) {
-        rates.push({
-          baseCurrency: "ETB",
-          currencyCode: $(tds[0]).text().trim(),
-          // currencyName: $(tds[1]).text().trim(),
-          buyRate: $(tds[2]).text().trim() || null,
-          sellRate: $(tds[4]).text().trim() || null,
-          transactionBuyingRate: null,
-          transactionSellingRate: null,
-          buySellDifference: Math.round(
-            (
-              ($(tds[4]).text().trim() || 0) - ($(tds[2]).text().trim() || 0)
-            ).toFixed(2)
-          ),
-          transactionBuySellDifference: 0,
-        });
+      if (!isNaN(buySellDifference)) {
+        buySellDifference = parseFloat(buySellDifference.toFixed(2));
       }
-      if (tds.length === 4) {
-        rates.push({
-          baseCurrency: "ETB",
-          currencyCode: $(tds[0]).text().trim(),
-          // currencyName: $(tds[1]).text().trim(),
-          buyRate: $(tds[2]).text().trim() || null,
-          sellRate: $(tds[3]).text().trim() || null,
-          transactionBuyingRate: null,
-          transactionSellingRate: null,
-          buySellDifference: Math.round(
-            (
-              ($(tds[3]).text().trim() || 0) - ($(tds[2]).text().trim() || 0)
-            ).toFixed(2)
-          ),
-          transactionBuySellDifference: 0,
-        });
-      }
+      rates.push({
+        baseCurrency: "ETB",
+        currencyCode: $(tds[0])
+          .find("p")
+          .filter(function () {
+            const text = $(this).text().trim();
+            return text.length === 3 && !text.startsWith("(");
+          })
+          .text()
+          .trim(),
+        currencyIcon: $(tds[0]).find("img").attr("data-src"),
+        buyRate,
+        sellRate,
+        buySellDifference,
+      });
     });
 
   return rates;
